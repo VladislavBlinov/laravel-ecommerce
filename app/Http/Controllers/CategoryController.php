@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CategoryResource;
+use App\Http\Resources\ProductResource;
 use App\Models\Category;
-use App\Models\Product;
-use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
     public function index()
     {
         $categories = Category::all();
-        return response()->json(['data' => $categories], 200);
+        return CategoryResource::collection($categories);
     }
 
-    public function show($slug)
+    public function getCategoryProducts(string $categorySlug)
     {
-        $category = Category::where('slug', $slug)->get()->first();
-        return response()->json(['data' => $category], 200);
+        $products = Category::with('products')->where('slug', $categorySlug)->firstOrFail()->products();
+        return ProductResource::collection($products->paginate(10));
     }
 }

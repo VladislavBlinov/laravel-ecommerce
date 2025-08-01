@@ -1,6 +1,6 @@
 <template>
     <div v-if="product && liked!=null">
-        <button @click="toggle">
+        <button class="cursor-pointer" @click="toggle">
             <svg
                 :class="[liked?'hover:fill-red-500/80':'hover:fill-red-500/20']"
                 xmlns="http://www.w3.org/2000/svg"
@@ -20,7 +20,6 @@
     </div>
 </template>
 <script>
-import {useCartStore} from "@/stores/cart.js";
 import api from "@/api.js";
 import {useAuthStore} from "@/stores/auth.js";
 
@@ -31,7 +30,6 @@ export default {
     data() {
         return {
             liked: null,
-            cartStore: useCartStore(),
             authStore: useAuthStore()
         }
     },
@@ -47,8 +45,8 @@ export default {
 
                 try {
                     if (this.authStore.user) {
-                        const response = await api.get(`/products/${product.id}/like`);
-                        this.liked = response.data.data;
+                        const response = await api.get(`likes/${product.id}`);
+                        this.liked = response.data.liked;
                     } else {
                         this.liked = false
                     }
@@ -64,7 +62,7 @@ export default {
         async toggle() {
             if (this.authStore.user) {
                 this.liked = !this.liked;
-                const response = await api.post(`products/${this.product.id}/like`)
+                const response = await api.post(`likes/${this.product.id}`)
                 console.log(response.data)
             } else {
                 alert('Сначала войдите!')

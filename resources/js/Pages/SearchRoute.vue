@@ -2,7 +2,6 @@
     <div class="max-w-4xl mx-auto p-4">
         <h2 class="text-2xl font-bold mb-4">Результаты поиска</h2>
 
-        <!-- ФИЛЬТРЫ -->
         <div class="flex gap-4 mb-6">
             <select v-model="category" class="border p-2 rounded">
                 <option value="">Все категории</option>
@@ -13,12 +12,41 @@
             <input type="number" v-model.number="priceMax" placeholder="Цена до" class="border p-2 rounded"/>
         </div>
 
-        <!-- КОНТЕНТ -->
         <div v-if="loading">Загрузка...</div>
         <div v-else-if="products.length === 0">Ничего не найдено</div>
         <div v-else class="grid grid-cols-1 gap-4">
             <div v-for="product in products" :key="product.id">
                 <Card :product="product"/>
+            </div>
+            <div v-if="pagination.last_page > 1" class="flex justify-center mt-6 space-x-2">
+                <button
+                    @click="fetchResults(pagination.current_page - 1)"
+                    :disabled="pagination.current_page === 1"
+                    class="px-3 py-1 border rounded cursor-pointer"
+                >
+                    Назад
+                </button>
+
+                <button
+                    v-for="page in pagination.last_page"
+                    :key="page"
+                    @click="fetchResults(page)"
+                    :disabled="page === pagination.current_page"
+                    :class="[
+            'px-3 py-1 border rounded cursor-pointer',
+            page === pagination.current_page ? 'bg-blue-500 text-white' : ''
+          ]"
+                >
+                    {{ page }}
+                </button>
+
+                <button
+                    @click="fetchResults(pagination.current_page + 1)"
+                    :disabled="pagination.current_page === pagination.last_page"
+                    class="px-3 py-1 border rounded cursor-pointer"
+                >
+                    Вперёд
+                </button>
             </div>
         </div>
     </div>
@@ -38,12 +66,16 @@ export default {
             products: [],
             loading: false,
 
-            // Привязка к фильтрам (инициализация из URL позже)
             category: '',
             priceMin: null,
             priceMax: null,
 
             categoryStore: useCategoryStore(),
+
+            pagination: {
+                current_page: 1,
+                last_page: 1,
+            },
         };
     },
 
@@ -57,7 +89,6 @@ export default {
     },
 
     watch: {
-        // Автоматически подгружаем при изменении URL
         '$route.query': {
             immediate: true,
             handler() {
@@ -66,7 +97,6 @@ export default {
             }
         },
 
-        // Обновляем URL при изменении любого фильтра
         category() {
             this.updateQuery();
         },
@@ -98,10 +128,10 @@ export default {
             });
         },
 
-        async fetchResults() {
+        async fetchResults(page = 1) {
             this.loading = true;
             try {
-                const response = await api.get('/search/', {
+                const response = await api.get('/search?page=' + page, {
                     params: {
                         text: this.queryText,
                         category: this.category,
@@ -111,6 +141,10 @@ export default {
                 });
 
                 this.products = Array.isArray(response.data.data) ? response.data.data : [];
+                this.pagination = {
+                    current_page: response.data.meta.current_page,
+                    last_page: response.data.meta.last_page,
+                }
             } catch (e) {
                 console.error('Ошибка поиска:', e);
                 this.products = [];

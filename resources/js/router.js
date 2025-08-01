@@ -32,6 +32,15 @@ const routes = [
                 },
             },
             {
+                name: "User",
+                path: "/user",
+                component: () => import("@/Pages/UserRoute.vue"),
+                meta: {
+                    requiresAuth: true,
+                    title: 'Профиль пользователя'
+                },
+            },
+            {
                 name: "Products",
                 path: "/products/:id",
 
@@ -59,20 +68,25 @@ const routes = [
                 path: "/checkout",
 
                 component: () => import("@/Pages/CheckoutRoute.vue"),
-
+                meta: {
+                    requiresAuth: true,
+                }
             },
             {
                 name: "OrdersLatest",
                 path: "/orders/latest",
 
                 component: () => import("@/Pages/OrderReturnRoute.vue"),
-
+                meta: {
+                    requiresAuth: true,
+                }
             },
             {
                 name: "Orders",
                 path: "/orders",
                 component: () => import("@/Pages/OrderRoute.vue"),
                 meta: {
+                    requiresAuth: true,
                     title: 'Заказы'
                 }
 
@@ -83,6 +97,9 @@ const routes = [
 
                 component: () => import("@/Pages/OrderItemRoute.vue"),
                 props: true,
+                meta: {
+                    requiresAuth: true,
+                }
 
             },
             {
@@ -91,6 +108,7 @@ const routes = [
 
                 component: () => import("@/Pages/LikeRoute.vue"),
                 meta: {
+                    requiresAuth: true,
                     title: 'Избранное'
                 }
 
@@ -107,9 +125,7 @@ const routes = [
             },
         ]
     },
-
 ];
-
 
 const router = createRouter({
     history: createWebHistory(),
@@ -124,7 +140,6 @@ router.beforeEach(async (to, from, next) => {
     } else {
         document.title = 'LaraShop';
     }
-
 
     if (!authStore.user && authStore.token) {
         await authStore.fetchUser();

@@ -3,6 +3,7 @@
         <div v-for="product in products">
             <Card :product="product"/>
         </div>
+        
     </div>
 </template>
 <script>

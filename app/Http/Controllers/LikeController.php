@@ -4,31 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
-use Illuminate\Http\Request;
 
 class LikeController extends Controller
 {
     public function index()
     {
         $user = auth()->user();
-        $products = $user->likedProducts;
+        $products = $user->likedProducts();
 
-        return ProductResource::collection($products);
+        return ProductResource::collection($products->paginate(10));
     }
 
-    public function show(string $id)
+    public function show(Product $product)
     {
-        $product = Product::findOrFail($id);
-        $like = $product->likedUsers()->exists(auth()->id());
+        $like = $product->likedUsers()->where('user_id', auth()->id())->exists();
 
-        return response()->json(['data' => $like]);
+        return response()->json(['liked' => $like]);
     }
 
-    public function store(Request $request, string $id)
+    public function store(Product $product)
     {
-        $product = Product::findOrFail($id);
-        $like = $product->likedUsers()->toggle(auth()->id());
+        $toggle = $product->likedUsers()->toggle(auth()->id());
+        $liked = !empty($toggle['attached']);
 
-        return response()->json(['data' => $like], 200);
+        return response()->json(['liked' => $liked]);
     }
 }

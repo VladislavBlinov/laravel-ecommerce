@@ -99,7 +99,7 @@ export const useCartStore = defineStore('cart', {
             this.items = this.items.filter(item => item.product.id !== product.id);
 
             if (authStore.user) {
-                await api.delete('/carts/remove/' + product.id);
+                await api.delete('/carts/' + product.id);
             } else {
                 localStorage.setItem('cart_items', JSON.stringify(this.items));
             }
@@ -110,7 +110,7 @@ export const useCartStore = defineStore('cart', {
             this.items = [];
 
             if (authStore.user) {
-                await api.post('/carts/clear');
+                await api.delete('/carts');
             } else {
                 localStorage.removeItem('cart_items');
             }

@@ -10,7 +10,6 @@
 
 <script>
 import {useReviewsStore} from '@/stores/reviews.js'
-import {watch} from 'vue'
 
 export default {
     props: ['productId'],
@@ -27,9 +26,6 @@ export default {
         }
     },
 
-    async mounted() {
-        await this.reviewsStore.loadReviews(this.productId)
-    },
 
     watch: {
         productId: {

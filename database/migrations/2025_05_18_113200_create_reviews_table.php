@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignIdFor(\App\Models\Product::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(\App\Models\User::class)->constrained()->cascadeOnDelete();
+            $table->unique(['product_id', 'user_id']);
             $table->integer('rating');
             $table->text('review')->nullable();
             $table->timestamps();

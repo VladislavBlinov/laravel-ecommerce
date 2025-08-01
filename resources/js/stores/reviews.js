@@ -9,24 +9,25 @@ export const useReviewsStore = defineStore('reviews', {
 
     actions: {
         async loadReviews(productId) {
-            const response = await api.get(`/products/${productId}/reviews`)
+            const response = await api.get(`reviews/${productId}`)
             this.reviews = [
                 ...this.reviews.filter(r => r.product_id !== productId),
-                ...response.data
+                ...response.data.data
             ]
+            console.log('ОТЗЫВЫ ', this.reviews)
         },
 
         async submitReview(productId, rating, comment) {
-            const response = await api.post(`/products/${productId}/reviews`, {rating, comment})
-            this.reviews.push(response.data)
-            return response.data
+            const response = await api.post(`reviews/${productId}`, {rating, comment})
+            this.reviews.push(response.data.data)
+            return response.data.data
         },
 
         updateReview(reviewId, rating, comment) {
-            return api.put(`/reviews/${reviewId}`, {rating, comment}).then(response => {
+            return api.put(`reviews/${reviewId}`, {rating, comment}).then(response => {
                 const index = this.reviews.findIndex(r => r.id === reviewId)
                 if (index !== -1) {
-                    this.reviews[index] = response.data
+                    this.reviews[index] = response.data.data
                 }
             })
         },

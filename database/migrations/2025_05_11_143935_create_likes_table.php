@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignIdFor(\App\Models\User::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(\App\Models\Product::class)->constrained()->onDelete('cascade');
+            $table->unique(['user_id', 'product_id']);
             $table->timestamps();
         });
     }

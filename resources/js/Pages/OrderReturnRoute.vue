@@ -30,6 +30,7 @@ export default {
     },
 
     async mounted() {
+        this.fetchStatus();
         this.startPolling();
     },
 
@@ -38,7 +39,7 @@ export default {
             const orderId = localStorage.getItem("lastOrderId");
 
             const response = await api.get(`orders/${orderId}`);
-            this.order = response.data;
+            this.order = response.data.data;
 
             this.isLoading = false;
 

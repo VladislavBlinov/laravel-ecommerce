@@ -1,40 +1,63 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\OrderController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 
-Route::post('/register', [\App\Http\Controllers\Auth::class, 'register']);
-Route::post('/login', [\App\Http\Controllers\Auth::class, 'login']);
-Route::post('/logout', [\App\Http\Controllers\Auth::class, 'logout'])->middleware('auth:sanctum');
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/user', [UserController::class, 'show']);
+    Route::put('/user', [UserController::class, 'update']);
+});
 
-Route::get('/products', [\App\Http\Controllers\ProductController::class, 'index']);
-Route::get('/products/likes', [\App\Http\Controllers\ProductController::class, 'getProductsByLikes'])->middleware('auth:sanctum');
-Route::get('/products/{id}', [\App\Http\Controllers\ProductController::class, 'show']);
-Route::get('/products/{id}/like', [\App\Http\Controllers\LikeController::class, 'show'])->middleware('auth:sanctum');
-Route::post('/products/{id}/like', [\App\Http\Controllers\LikeController::class, 'store'])->middleware('auth:sanctum');
-Route::get('/products/{id}/reviews', [\App\Http\Controllers\ReviewController::class, 'index']);
-Route::post('/products/{id}/reviews', [\App\Http\Controllers\ReviewController::class, 'store'])->middleware('auth:sanctum');
-Route::put('/reviews/{id}', [\App\Http\Controllers\ReviewController::class, 'update'])->middleware('auth:sanctum');
-Route::get('/orders/{id}', [\App\Http\Controllers\OrderController::class, 'show'])->middleware('auth:sanctum');
-Route::get('/orders', [\App\Http\Controllers\OrderController::class, 'index'])->middleware('auth:sanctum');
-Route::post('/orders', [\App\Http\Controllers\OrderController::class, 'create'])->middleware('auth:sanctum');
+Route::prefix('products')->group(function () {
+    Route::get('/', [ProductController::class, 'index']);
+    Route::get('/{product}', [ProductController::class, 'show']);
+});
+Route::get('/search/', SearchController::class);
+
+Route::prefix('likes')->middleware('auth:sanctum')->group(function () {
+    Route::get('/', [LikeController::class, 'index']);
+    Route::get('/{product}', [LikeController::class, 'show']);
+    Route::post('/{product}', [LikeController::class, 'store']);
+});
+
+Route::prefix('reviews')->group(function () {
+    Route::get('/{productId}', [ReviewController::class, 'index']);
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/{productId}', [ReviewController::class, 'store']);
+        Route::put('/{reviewId}', [ReviewController::class, 'update']);
+    });
+});
+
+Route::prefix('orders')->middleware('auth:sanctum')->group(function () {
+    Route::get('/{orderId}', [OrderController::class, 'show']);
+    Route::get('/', [OrderController::class, 'index']);
+    Route::post('/', [OrderController::class, 'create']);
+    Route::get('/latest', [OrderController::class, 'latest']);
+});
 Route::post('/yookassa/callback', [OrderController::class, 'callback'])->name('yookassa.callback');
-Route::get('/orders/latest', [OrderController::class, 'latest'])->middleware('auth:sanctum');
 
-Route::get('/search/', [\App\Http\Controllers\ProductController::class, 'search']);
+Route::prefix('categories')->group(function () {
+    Route::get('/', [CategoryController::class, 'index']);
+    Route::get('/{categorySlug}', [CategoryController::class, 'getCategoryProducts']);
+});
 
+Route::prefix('carts')->middleware('auth:sanctum')->group(function () {
+    Route::get('/', [CartController::class, 'index']);
+    Route::post('/', [CartController::class, 'create']);
+    Route::put('/', [CartController::class, 'update']);
+    Route::delete('/', [CartController::class, 'clear']);
+    Route::delete('/{productId}', [CartController::class, 'destroy']);
 
-Route::get('/categories', [\App\Http\Controllers\CategoryController::class, 'index']);
-Route::get('/categories/{slug}', [\App\Http\Controllers\ProductController::class, 'getProductsByCategory']);
-
-Route::get('/carts', [\App\Http\Controllers\CartController::class, 'index'])->middleware('auth:sanctum');
-Route::post('/carts', [\App\Http\Controllers\CartController::class, 'create'])->middleware('auth:sanctum');
-Route::put('/carts', [\App\Http\Controllers\CartController::class, 'update'])->middleware('auth:sanctum');
-Route::post('/carts/clear', [\App\Http\Controllers\CartController::class, 'clear'])->middleware('auth:sanctum');
-Route::get('/carts/products', [\App\Http\Controllers\ProductController::class, 'getProductsByIds'])->middleware('auth:sanctum');
-Route::delete('/carts/remove/{productId}', [\App\Http\Controllers\CartController::class, 'destroy'])->middleware('auth:sanctum');
+});

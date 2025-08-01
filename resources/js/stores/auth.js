@@ -5,6 +5,7 @@ export const useAuthStore = defineStore('auth', {
     state: () => ({
         user: null,
         token: localStorage.getItem('token') || null,
+        isLoading: true,
     }),
     actions: {
         async login(credentials) {
@@ -63,8 +64,19 @@ export const useAuthStore = defineStore('auth', {
             if (this.token) {
                 api.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
                 const response = await api.get('/user');
-                this.user = response.data;
+                this.user = response.data.data;
+                this.isLoading = false;
             }
         },
+
+        async updateProfile(data) {
+            try {
+                const response = await api.put('/user', data)
+                this.user = response.data.data
+            } catch (error) {
+                console.error('Ошибка обновления профиля:', error)
+                throw error
+            }
+        }
     },
 });

@@ -113,7 +113,7 @@ export default {
             try {
                 await authStore.login(this.form);
                 await cartStore.mergeLocalToServer();
-                this.$router.push('/');
+                this.$router.back();
             } catch (error) {
                 if (error.response && error.response.data) {
                     if (error.response.data.errors) {
