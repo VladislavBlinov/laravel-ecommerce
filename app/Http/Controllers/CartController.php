@@ -13,7 +13,9 @@ class CartController extends Controller
     public function index()
     {
 
-        $cart = Cart::with('cartItems.product')->where('user_id', auth()->id())->firstOrFail();
+        $cart = Cart::with('cartItems.product')
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
         $cartItems = $cart->cartItems;
 
         return CartItemResource::collection($cartItems);
@@ -21,7 +23,9 @@ class CartController extends Controller
 
     public function create(CartRequest $request)
     {
-        $cart = Cart::with('cartItems')->where('user_id', auth()->id())->firstOrCreate(['user_id' => auth()->id()]);
+        $cart = Cart::with('cartItems')
+            ->where('user_id', auth()->id())
+            ->firstOrCreate(['user_id' => auth()->id()]);
         $cartItem = $cart->cartItems()->where('product_id', $request->get('product_id'))->first();
 
         if ($cartItem) {
@@ -40,8 +44,12 @@ class CartController extends Controller
 
     public function update(CartRequest $request)
     {
-        $cart = Cart::with('cartItems')->where('user_id', auth()->id())->firstOrFail();
-        $cartItem = $cart->cartItems()->where('product_id', $request->get('product_id'))->first();
+        $cart = Cart::with('cartItems')
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+        $cartItem = $cart->cartItems()
+            ->where('product_id', $request->get('product_id'))
+            ->first();
 
         if (!$cartItem) {
             return response()->json(['message' => 'Product not found in cart'], 404);
@@ -55,8 +63,13 @@ class CartController extends Controller
 
     public function destroy(int $productId)
     {
-        $cart = Cart::with('cartItems')->where('user_id', auth()->id())->firstOrFail();
-        $cartItem = $cart->cartItems()->where('product_id', $productId)->delete();
+        $cart = Cart::with('cartItems')
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+        $cartItem = $cart
+            ->cartItems()
+            ->where('product_id', $productId)
+            ->delete();
 
         if (!$cartItem) {
             return response()->json(['message' => 'Product not found in cart'], 404);
@@ -67,7 +80,8 @@ class CartController extends Controller
 
     public function clear(Request $request)
     {
-        $cart = Cart::where('user_id', auth()->id())->firstOrFail();
+        $cart = Cart::where('user_id', auth()->id())
+            ->firstOrFail();
         $cart->cartItems()->delete();
 
         return response()->json(['message' => 'Cart cleared']);

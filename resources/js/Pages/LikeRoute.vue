@@ -1,10 +1,10 @@
 <template>
     <h2 class="text-xl">Лайки:</h2>
-    <div class="space-y-3">
+    <div class="flex flex-col gap-3">
         <div v-for="product in products">
             <LikeItem :product="product"/>
         </div>
-        <div v-if="pagination.last_page > 1" class="flex justify-center mt-6 space-x-2">
+        <div v-if="pagination.last_page > 1" class="flex justify-center mt-6 gap-2">
             <button
                 @click="fetchProducts(pagination.current_page - 1)"
                 :disabled="pagination.current_page === 1"
@@ -12,7 +12,6 @@
             >
                 Назад
             </button>
-
             <button
                 v-for="page in pagination.last_page"
                 :key="page"
@@ -25,7 +24,6 @@
             >
                 {{ page }}
             </button>
-
             <button
                 @click="fetchProducts(pagination.current_page + 1)"
                 :disabled="pagination.current_page === pagination.last_page"
@@ -41,9 +39,7 @@
 import api from "@/api.js";
 import LikeItem from "@/components/ui/LikeItem.vue";
 
-
 export default {
-
     components: {LikeItem},
 
     mounted() {
@@ -59,13 +55,18 @@ export default {
             },
         }
     },
+
     methods: {
         async fetchProducts(page = 1) {
-            const response = await api.get('likes?page=' + page);
-            this.products = response.data.data;
-            this.pagination = {
-                current_page: response.data.meta.current_page,
-                last_page: response.data.meta.last_page,
+            try {
+                const response = await api.get(`likes?page=${page}`);
+                this.products = response.data.data;
+                this.pagination = {
+                    current_page: response.data.meta.current_page,
+                    last_page: response.data.meta.last_page,
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки лайков:', error);
             }
         }
     }

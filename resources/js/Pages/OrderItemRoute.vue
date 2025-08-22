@@ -1,26 +1,22 @@
 <template>
     <div v-if="order">
+        <h2>Заказ <span class="font-bold">№{{ order.id }}</span></h2>
+        <p>Адрес доставки:
+            <span class="font-bold">{{ order.address }}</span>
+        </p>
+        <p>Статус заказа: <span class="font-bold">{{ order.status }}</span></p>
+        <p class="mt-2">Товары:</p>
         <div>
-            <h2>Заказ номер {{ order.id }}</h2>
-            <p>Адрес доставки - {{ order.address }}</p>
-        </div>
-        <div>
-            <p>Статус заказа: {{ order.status }}</p>
-            <div>
-                <div v-for="item in order.items">
-                    <Card :product="item.product"/>
-                </div>
+            <div v-for="item in order.items">
+                <Card :product="item.product"/>
             </div>
         </div>
-
-
     </div>
-
 </template>
+
 <script>
 import api from "@/api.js";
-
-import Card from "@/components/ui/Card.vue";
+import Card from "@/components/ui/ProductCard.vue";
 
 export default {
     components: {Card},
@@ -30,6 +26,7 @@ export default {
             order: null,
         }
     },
+
     mounted() {
         this.fetchOrder();
     },

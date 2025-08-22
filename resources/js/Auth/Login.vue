@@ -1,13 +1,11 @@
 <template>
     <form @submit.prevent="login" class="w-full" action="#" method="POST">
-        <!-- Контейнер для ошибок сервера -->
         <div v-if="serverErrors.length"
              class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
             <ul>
                 <li v-for="(error, index) in serverErrors" :key="index">{{ error }}</li>
             </ul>
         </div>
-
         <div>
             <label for="email">Email</label>
             <input
@@ -20,7 +18,6 @@
             />
             <span v-if="errors.email" class="text-red-500 text-sm">{{ errors.email }}</span>
         </div>
-
         <div>
             <label for="password">Пароль</label>
             <input
@@ -33,7 +30,6 @@
             />
             <span v-if="errors.password" class="text-red-500 text-sm">{{ errors.password }}</span>
         </div>
-
         <button
             class="cursor-pointer bg-blue-600 p-1.5 rounded-3xl text-white"
             :disabled="isLoading || !isFormValid"
@@ -64,12 +60,14 @@ export default {
             isLoading: false,
         };
     },
+
     computed: {
         isFormValid() {
             return !this.errors.email && !this.errors.password &&
                 this.form.email && this.form.password;
         }
     },
+
     methods: {
         validateField(field) {
             if (field === 'email') {
@@ -91,6 +89,7 @@ export default {
                 }
             }
         },
+
         isValidEmail(email) {
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
         },
@@ -99,6 +98,7 @@ export default {
             this.validateField('password');
             return !this.errors.email && !this.errors.password;
         },
+
         async login() {
             this.serverErrors = [];
 

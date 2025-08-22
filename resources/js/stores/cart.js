@@ -22,10 +22,8 @@ export const useCartStore = defineStore('cart', {
     actions: {
         async loadCart() {
             const authStore = useAuthStore();
-            console.log('load_items', this.items)
             if (authStore.user) {
                 const response = await api.get('/carts');
-                console.log('load_response', response.data.data);
                 this.items = response.data.data.map(item => ({
                     product: item.product,
                     quantity: item.quantity,
@@ -39,7 +37,6 @@ export const useCartStore = defineStore('cart', {
 
         async mergeLocalToServer() {
             const authStore = useAuthStore();
-            console.log(this.items);
             const localItems = JSON.parse(localStorage.getItem('cart_items')) || [];
             if (authStore.user) {
                 for (const item of localItems) {

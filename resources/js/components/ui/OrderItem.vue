@@ -1,16 +1,15 @@
 <template>
-    <div class="px-2 py-1 w-full flex justify-between">
-        <router-link class="flex justify-between"
+    <div class="w-full flex gap-8 items-center border-1 border-gray-300 p-4 rounded-xl">
+        <router-link class="w-full flex justify-between items-center"
                      :to="{ name: 'Order', params: { id: order.id } }">
             <h3 class="">Заказ №{{ order.id }}</h3>
             <p class="text-[#10c44c] font-bold">Статус - {{ order.status }}</p>
         </router-link>
         <a @click.prevent="repeatOrder(order)" href="#">Повторить заказ</a>
-
     </div>
 </template>
-<script>
 
+<script>
 import {useCartStore} from "@/stores/cart.js";
 
 export default {

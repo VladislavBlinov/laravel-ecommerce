@@ -5,6 +5,7 @@
         <p class="text-[#10c44c] font-bold">{{ product.price }} ₽</p>
     </router-link>
 </template>
+
 <script>
 export default {
     name: "Card",

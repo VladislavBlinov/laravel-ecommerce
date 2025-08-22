@@ -1,6 +1,6 @@
 <template>
     <header class="w-full max-w-250 mx-auto bg-white p-4 rounded-b-2xl">
-        <div class="flex justify-between space-x-4 items-center">
+        <div class="flex justify-between flex gap-4 items-center">
             <router-link class="text-blue-500 bold text-2xl" :to="{name:'Home'}">LaraShop
             </router-link>
             <button @click.prevent="categoryToggle"
@@ -16,8 +16,8 @@
                 </button>
             </form>
             <nav class="flex justify-between">
-                <div class="space-x-2">
-                    <div class="space-x-2" v-if="!authStore.user">
+                <div class="flex gap-2">
+                    <div class="flex gap-2" v-if="!authStore.user">
                         <router-link :to="{name:'Login'}" active-class="text-red-500">Вход
                         </router-link>
                         <router-link :to="{name:'Register'}" active-class="text-red-500">Регистрация
@@ -32,6 +32,10 @@
                         <div v-if="userShow"
                              class="absolute p-2 rounded-md bg-white shadow-lg ring-1 ring-black/5">
                             <ul>
+                                <li>
+                                    <router-link :to="{name:'User'}" active-class="text-red-500">Профиль
+                                    </router-link>
+                                </li>
                                 <li>
                                     <router-link :to="{name:'Cart'}" active-class="text-red-500">Корзина
                                     </router-link>
@@ -51,12 +55,10 @@
                             </ul>
                         </div>
                     </div>
-
-
                 </div>
             </nav>
         </div>
-        <div v-if="categoryShow" class="space-x-2 mt-2">
+        <div v-if="categoryShow" class="flex gap-2 mt-2">
             <router-link v-if="categoryStore.categories" v-for="category in categoryStore.categories" :to="{ name: 'Categories', params: {
                     slug: category.slug } }" active-class="text-red-500">
                 {{ category.name }}
@@ -64,6 +66,7 @@
         </div>
     </header>
 </template>
+
 <script>
 import {useAuthStore} from "@/stores/auth.js";
 import router from "@/router.js";
@@ -73,6 +76,7 @@ import UserSvg from "@/components/ui/UserSvg.vue";
 export default {
     name: 'AppHeader',
     components: {UserSvg},
+    
     data() {
         return {
             categoryStore: useCategoryStore(),
@@ -103,10 +107,6 @@ export default {
         async categoryToggle() {
             this.categoryShow = !this.categoryShow;
         },
-
-
     },
-
-
 }
 </script>

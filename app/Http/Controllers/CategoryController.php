@@ -16,7 +16,10 @@ class CategoryController extends Controller
 
     public function getCategoryProducts(string $categorySlug)
     {
-        $products = Category::with('products')->where('slug', $categorySlug)->firstOrFail()->products();
-        return ProductResource::collection($products->paginate(10));
+        $products = Category::with('products')
+            ->where('slug', $categorySlug)
+            ->firstOrFail()
+            ->products();
+        return ProductResource::collection($products->paginate(5));
     }
 }

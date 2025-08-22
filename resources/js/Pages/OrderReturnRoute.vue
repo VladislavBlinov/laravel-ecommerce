@@ -36,19 +36,21 @@ export default {
 
     methods: {
         async fetchStatus() {
-            const orderId = localStorage.getItem("lastOrderId");
+            try {
+                const orderId = localStorage.getItem("lastOrderId");
+                const response = await api.get(`orders/${orderId}`);
+                this.order = response.data.data;
+                this.isLoading = false;
 
-            const response = await api.get(`orders/${orderId}`);
-            this.order = response.data.data;
-
-            this.isLoading = false;
-
-            if (this.order.status === 'Оплачен' || this.order.status === 'Отменен') {
-                this.isSuccess = true;
-                this.stopPolling();
-
+                if (this.order.status === 'Оплачен' || this.order.status === 'Отменен') {
+                    this.isSuccess = true;
+                    this.stopPolling();
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки статуса:', error);
             }
         },
+
         startPolling() {
             this.polling = setInterval(this.fetchStatus, 10000); // каждые 3 секунды
         },
@@ -56,6 +58,7 @@ export default {
         stopPolling() {
             clearInterval(this.polling);
         },
+
         beforeUnmount() {
             this.stopPolling();
         }

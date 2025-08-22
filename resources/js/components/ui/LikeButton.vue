@@ -1,6 +1,6 @@
 <template>
     <div v-if="product && liked!=null">
-        <button class="cursor-pointer" @click="toggle">
+        <button class="cursor-pointer bg-blue-200 rounded-md p-3 w-12 h-12" @click="toggle">
             <svg
                 :class="[liked?'hover:fill-red-500/80':'hover:fill-red-500/20']"
                 xmlns="http://www.w3.org/2000/svg"
@@ -19,6 +19,7 @@
         </button>
     </div>
 </template>
+
 <script>
 import api from "@/api.js";
 import {useAuthStore} from "@/stores/auth.js";
@@ -51,7 +52,7 @@ export default {
                         this.liked = false
                     }
                 } catch (error) {
-                    console.error("Failed to fetch like status:", error);
+                    console.error("Не удалось получить статус лайка:", error);
                     this.liked = false;
                 }
             },
@@ -63,11 +64,9 @@ export default {
             if (this.authStore.user) {
                 this.liked = !this.liked;
                 const response = await api.post(`likes/${this.product.id}`)
-                console.log(response.data)
             } else {
                 alert('Сначала войдите!')
             }
-
         },
     },
 }

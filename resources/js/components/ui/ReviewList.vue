@@ -1,9 +1,11 @@
 <template>
-    <div v-if="productId">
-        <h3>Отзывы:</h3>
-        <div v-for="review in productReviews" :key="review.id">
-            <strong>{{ review.user.name }}</strong> — ★{{ review.rating }}
-            <p v-if="review.review">{{ review.review }}</p>
+    <div class="mb-4" v-if="productId">
+        <h4 class="font-bold">Отзывы:</h4>
+        <div class="flex flex-col gap-2">
+            <div class="bg-blue-200/60 rounded-md p-1" v-for="review in productReviews" :key="review.id">
+                <strong>{{ review.user.name }}</strong> — ★{{ review.rating }}
+                <p v-if="review.review">{{ review.review }}</p>
+            </div>
         </div>
     </div>
 </template>
@@ -25,7 +27,6 @@ export default {
             return this.reviewsStore.reviewsByProduct(this.productId)
         }
     },
-
 
     watch: {
         productId: {

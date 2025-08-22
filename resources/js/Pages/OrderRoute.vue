@@ -6,11 +6,11 @@
     <div v-else-if="orders.length === 0">
         Заказов еще нет.
     </div>
-    <div v-else class="space-y-3">
+    <div v-else class="flex flex-col gap-3">
         <div v-for="order in orders" :key="order.id">
             <OrderItem :order="order"/>
         </div>
-        <div v-if="pagination.last_page > 1" class="flex justify-center mt-6 space-x-2">
+        <div v-if="pagination.last_page > 1" class="flex justify-center mt-6 gap-2">
             <button
                 @click="fetchOrders(pagination.current_page - 1)"
                 :disabled="pagination.current_page === 1"
@@ -18,7 +18,6 @@
             >
                 Назад
             </button>
-
             <button
                 v-for="page in pagination.last_page"
                 :key="page"
@@ -31,7 +30,6 @@
             >
                 {{ page }}
             </button>
-
             <button
                 @click="fetchOrders(pagination.current_page + 1)"
                 :disabled="pagination.current_page === pagination.last_page"
@@ -42,9 +40,8 @@
         </div>
     </div>
 </template>
+
 <script>
-
-
 import api from "@/api.js";
 import OrderItem from "@/components/ui/OrderItem.vue";
 
@@ -65,15 +62,19 @@ export default {
     mounted() {
         this.fetchOrders();
     },
-    
+
     methods: {
         async fetchOrders(page = 1) {
-            const response = await api.get('/orders?page=' + page);
-            this.orders = response.data.data;
-            this.isLoading = false
-            this.pagination = {
-                current_page: response.data.meta.current_page,
-                last_page: response.data.meta.last_page,
+            try {
+                const response = await api.get(`/orders?page=${page}`);
+                this.orders = response.data.data;
+                this.isLoading = false
+                this.pagination = {
+                    current_page: response.data.meta.current_page,
+                    last_page: response.data.meta.last_page,
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки заказов:', error);
             }
         },
     },

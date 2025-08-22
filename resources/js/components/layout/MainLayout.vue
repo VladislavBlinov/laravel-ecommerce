@@ -14,7 +14,6 @@ import Footer from "@/components/layout/Footer.vue";
 import {useAuthStore} from "@/stores/auth.js";
 import {useCartStore} from "@/stores/cart.js";
 
-
 export default {
     components: {Footer, AppHeader},
 

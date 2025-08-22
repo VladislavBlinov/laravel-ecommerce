@@ -14,7 +14,6 @@ export const useReviewsStore = defineStore('reviews', {
                 ...this.reviews.filter(r => r.product_id !== productId),
                 ...response.data.data
             ]
-            console.log('ОТЗЫВЫ ', this.reviews)
         },
 
         async submitReview(productId, rating, comment) {
@@ -43,7 +42,7 @@ export const useReviewsStore = defineStore('reviews', {
 
         getUserReview(productId) {
             const auth = useAuthStore()
-            return this.reviews.find(r => r.product_id === productId && r.user_id === auth.user?.id)
+            return this.reviews.find(r => r.product_id === productId && r.user.id === auth.user?.id)
         }
     }
 })

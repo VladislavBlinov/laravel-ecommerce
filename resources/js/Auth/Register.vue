@@ -6,7 +6,6 @@
                 <li v-for="(error, index) in serverErrors" :key="index">{{ error }}</li>
             </ul>
         </div>
-
         <div>
             <label for="name">Имя</label>
             <input
@@ -19,7 +18,6 @@
             />
             <span v-if="errors.name" class="text-red-500 text-sm">{{ errors.name }}</span>
         </div>
-
         <div>
             <label for="email">Email</label>
             <input
@@ -32,7 +30,6 @@
             />
             <span v-if="errors.email" class="text-red-500 text-sm">{{ errors.email }}</span>
         </div>
-
         <div>
             <label for="address">Адрес</label>
             <input
@@ -42,7 +39,6 @@
                 v-model="form.address"
             />
         </div>
-
         <div>
             <label for="password">Пароль</label>
             <input
@@ -55,7 +51,6 @@
             />
             <span v-if="errors.password" class="text-red-500 text-sm">{{ errors.password }}</span>
         </div>
-
         <div>
             <label for="password_confirmation">Пароль повторно</label>
             <input
@@ -70,7 +65,6 @@
                     errors.password_confirmation
                 }}</span>
         </div>
-
         <button
             class="cursor-pointer bg-blue-600 p-1.5 rounded-3xl text-white"
             :disabled="isLoading || !isFormValid"
@@ -106,6 +100,7 @@ export default {
             isLoading: false,
         };
     },
+
     computed: {
         isFormValid() {
             return !this.errors.name &&
@@ -118,6 +113,7 @@ export default {
                 this.form.password_confirmation;
         }
     },
+
     methods: {
         validateField(field) {
             if (field === 'name') {
@@ -158,9 +154,11 @@ export default {
                 }
             }
         },
+
         isValidEmail(email) {
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
         },
+
         validateForm() {
             this.validateField('name');
             this.validateField('email');
@@ -183,7 +181,6 @@ export default {
             const cartStore = useCartStore();
 
             try {
-
                 await authStore.register(this.form);
                 await cartStore.mergeLocalToServer();
                 this.$router.push('/');

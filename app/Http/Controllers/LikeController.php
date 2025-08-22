@@ -11,13 +11,14 @@ class LikeController extends Controller
     {
         $user = auth()->user();
         $products = $user->likedProducts();
-
-        return ProductResource::collection($products->paginate(10));
+        return ProductResource::collection($products->paginate(5));
     }
 
     public function show(Product $product)
     {
-        $like = $product->likedUsers()->where('user_id', auth()->id())->exists();
+        $like = $product->likedUsers()
+            ->where('user_id', auth()->id())
+            ->exists();
 
         return response()->json(['liked' => $like]);
     }

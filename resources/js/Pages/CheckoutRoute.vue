@@ -1,24 +1,20 @@
 <template>
     <div v-if="cartItems.length">
         <h2 class="text-xl mb-4">Оформление заказа</h2>
-
-        <div class="space-y-2 mb-4">
+        <div class="flex flex-col gap-4 mb-4">
             <div v-for="item in cartItems" :key="item.product.id">
                 {{ item.product.name }} — {{ item.quantity }} × {{ item.product.price }}₽
             </div>
             <p class="font-semibold">Итого: {{ totalPrice }}₽</p>
         </div>
-
         <label>
             Адрес доставки:
             <input v-model="address" class="border p-2 w-full mt-1"/>
         </label>
-
         <button @click="submitOrder" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
                 :disabled="orderStore.isSubmitting || !address">
             {{ orderStore.isSubmitting ? 'Отправка...' : 'Оформить заказ' }}
         </button>
-
         <p v-if="successMessage" class="text-green-600 mt-2">{{ successMessage }}</p>
     </div>
     <div v-else>
@@ -45,6 +41,7 @@ export default {
         cartItems() {
             return this.cartStore.items
         },
+
         totalPrice() {
             return this.cartStore.getTotalPrice
         }
@@ -61,8 +58,8 @@ export default {
                 } else {
                     this.error = order.message || 'Ошибка при создании платежа';
                 }
-            } catch (e) {
-                console.error('Ошибка при создании заказа', e)
+            } catch (error) {
+                console.error('Ошибка при создании заказа', error)
             }
         }
     }

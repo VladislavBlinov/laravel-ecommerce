@@ -7,7 +7,7 @@
                 <Card :product="product"/>
             </div>
         </div>
-        <div v-if="pagination.last_page > 1" class="flex justify-center mt-6 space-x-2">
+        <div v-if="pagination.last_page > 1" class="flex justify-center mt-6 gap-2">
             <button
                 @click="fetchProducts(pagination.current_page - 1)"
                 :disabled="pagination.current_page === 1"
@@ -15,7 +15,6 @@
             >
                 Назад
             </button>
-
             <button
                 v-for="page in pagination.last_page"
                 :key="page"
@@ -28,7 +27,6 @@
             >
                 {{ page }}
             </button>
-
             <button
                 @click="fetchProducts(pagination.current_page + 1)"
                 :disabled="pagination.current_page === pagination.last_page"
@@ -41,7 +39,8 @@
 </template>
 
 <script>
-import Card from "@/components/ui/Card.vue";
+import Card from "@/components/ui/ProductCard.vue";
+import api from "@/api.js";
 
 export default {
 
@@ -61,21 +60,22 @@ export default {
             isLoading: true,
         }
     },
+
     methods: {
         async fetchProducts(page = 1) {
             this.isLoading = true;
-            axios.get(`api/products?page=${page}`).then((response) => {
-                console.log(response);
+            try {
+                const response = await api.get(`/products?page=${page}`);
                 this.isLoading = false;
                 this.products = response.data.data;
                 this.pagination = {
                     current_page: response.data.meta.current_page,
                     last_page: response.data.meta.last_page,
                 }
-            }).catch((error) => {
-                console.log(error);
-            })
+            } catch (error) {
+                console.error('Ошибка загрузки товаров:', error);
+            }
         }
-    }
+    },
 }
 </script>

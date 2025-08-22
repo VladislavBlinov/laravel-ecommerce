@@ -1,19 +1,21 @@
 <template>
     <div v-if="productId">
         <div v-if="authStore.user">
-            <h3 v-if="!isEditing">Оставить отзыв</h3>
+            <h3 class="font-medium" v-if="!isEditing">Оставить отзыв</h3>
             <h3 v-else>Редактировать отзыв</h3>
-
             <label>Оценка:
-                <select v-model="rating">
+                <select class="border-1 border-gray-400" v-model="rating">
                     <option disabled value="">Выберите</option>
                     <option v-for="n in 5" :key="n" :value="n">{{ n }}</option>
                 </select>
             </label>
             <br/>
-            <textarea v-model="comment" placeholder="Комментарий (необязательно)"></textarea>
+            <textarea class="border-1 p-1" v-model="comment" placeholder="Комментарий (необязательно)"></textarea>
             <br/>
-            <button @click="submit">{{ isEditing ? 'Обновить' : 'Отправить' }}</button>
+            <button class="bg-blue-600 text-white p-1 rounded-md hover:bg-blue-500 cursor-pointer" @click="submit">{{
+                    isEditing ? 'Обновить' : 'Отправить'
+                }}
+            </button>
         </div>
     </div>
 </template>

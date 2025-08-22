@@ -15,7 +15,7 @@ class UserController extends Controller
     public function update(UserRequest $request)
     {
         $user = auth()->user();
-        $user->update($request->all());
+        $user->update($request->validated());
 
         return UserResource::make($user);
     }

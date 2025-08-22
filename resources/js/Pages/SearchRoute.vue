@@ -1,24 +1,21 @@
 <template>
     <div class="max-w-4xl mx-auto p-4">
         <h2 class="text-2xl font-bold mb-4">Результаты поиска</h2>
-
         <div class="flex gap-4 mb-6">
             <select v-model="category" class="border p-2 rounded">
                 <option value="">Все категории</option>
                 <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
             </select>
-
             <input type="number" v-model.number="priceMin" placeholder="Цена от" class="border p-2 rounded"/>
             <input type="number" v-model.number="priceMax" placeholder="Цена до" class="border p-2 rounded"/>
         </div>
-
         <div v-if="loading">Загрузка...</div>
         <div v-else-if="products.length === 0">Ничего не найдено</div>
         <div v-else class="grid grid-cols-1 gap-4">
             <div v-for="product in products" :key="product.id">
                 <Card :product="product"/>
             </div>
-            <div v-if="pagination.last_page > 1" class="flex justify-center mt-6 space-x-2">
+            <div v-if="pagination.last_page > 1" class="flex justify-center mt-6 gap-2">
                 <button
                     @click="fetchResults(pagination.current_page - 1)"
                     :disabled="pagination.current_page === 1"
@@ -26,7 +23,6 @@
                 >
                     Назад
                 </button>
-
                 <button
                     v-for="page in pagination.last_page"
                     :key="page"
@@ -39,7 +35,6 @@
                 >
                     {{ page }}
                 </button>
-
                 <button
                     @click="fetchResults(pagination.current_page + 1)"
                     :disabled="pagination.current_page === pagination.last_page"
@@ -55,7 +50,7 @@
 <script>
 import api from "@/api";
 import {useCategoryStore} from "@/stores/category.js";
-import Card from "@/components/ui/Card.vue";
+import Card from "@/components/ui/ProductCard.vue";
 
 export default {
     name: "SearchRoute",
@@ -131,7 +126,7 @@ export default {
         async fetchResults(page = 1) {
             this.loading = true;
             try {
-                const response = await api.get('/search?page=' + page, {
+                const response = await api.get(`/search?page=${page}`, {
                     params: {
                         text: this.queryText,
                         category: this.category,
@@ -145,8 +140,8 @@ export default {
                     current_page: response.data.meta.current_page,
                     last_page: response.data.meta.last_page,
                 }
-            } catch (e) {
-                console.error('Ошибка поиска:', e);
+            } catch (error) {
+                console.error('Ошибка поиска:', error);
                 this.products = [];
             } finally {
                 this.loading = false;

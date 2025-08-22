@@ -25,13 +25,12 @@ export const useOrderStore = defineStore('order', {
                 const response = await api.post('/orders', payload)
                 this.lastOrder = response.data.order
                 localStorage.setItem('lastOrderId', JSON.stringify(response.data.order.id));
-                console.log('RESPONSE_ORDER', response.data)
                 await cartStore.clearCart()
                 return response.data
             } finally {
                 this.isSubmitting = false
             }
         }
-        
+
     }
 })
